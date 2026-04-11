@@ -2,12 +2,14 @@ package com.plavatvlad.wayfare.utils
 
 import android.Manifest
 import android.content.Context
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresPermission
 import kotlinx.coroutines.*
 
@@ -26,7 +28,7 @@ object StatusMonitor {
         val gpsLocked: Boolean,
         val gpsAccuracy: Float?,
         val location: Location?,
-        val internetQuality: String
+        val internetQuality: Int?
     )
 
     fun init(context: Context) {
@@ -42,8 +44,7 @@ object StatusMonitor {
 
             override fun onLocationChanged(location: Location) {
                 lastLocation = location
-                isGpsLocked = location.provider == LocationManager.GPS_PROVIDER &&
-                        (System.currentTimeMillis() - location.time < 5000)
+                isGpsLocked = (System.currentTimeMillis() - location.time < 5000)
             }
 
             override fun onProviderDisabled(provider: String) {
@@ -114,23 +115,20 @@ object StatusMonitor {
     }
 
     // 🌐 Internet quality
-    private fun getInternetQuality(): String {
+    private fun getInternetQuality(): Int {
         val cm = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = cm.activeNetwork ?: return "NO NETWORK"
-        val caps = cm.getNetworkCapabilities(network) ?: return "NO NETWORK"
+        val network = cm.activeNetwork ?: return -2
+        val caps = cm.getNetworkCapabilities(network) ?: return -2
 
         if (!caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
-            return "NO INTERNET"
+            return -1
         }
 
         val downKbps = caps.linkDownstreamBandwidthKbps
         Log.d("STATUS", " NET: $downKbps")
 
-        return when {
-            downKbps > 10000 -> "GOOD"
-            downKbps > 2000 -> "OK"
-            downKbps > 500 -> "WEAK"
-            else -> "BAD"
-        }
+        return downKbps
     }
+
+
 }
