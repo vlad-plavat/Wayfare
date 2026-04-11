@@ -1,11 +1,54 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <TextView
-        android:text="Map will be here"
-        android:layout_gravity="center"
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <LinearLayout
+        android:id="@+id/statusContainer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:orientation="horizontal"
+        android:layout_margin="12dp">
+
+        <LinearLayout
+            android:id="@+id/gpsBubble"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:background="@drawable/bubble_bg"
+            android:layout_marginEnd="8dp">
+
+            <ImageView
+                android:id="@+id/gpsIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/gps_status"
+                app:tint="@android:color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/netBubble"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:background="@drawable/bubble_bg">
+
+            <ImageView
+                android:id="@+id/netIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/net_status"
+                app:tint="@android:color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </FrameLayout>
