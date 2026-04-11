@@ -94,7 +94,7 @@ object StatusMonitor {
                     internetQuality = net
                 )
 
-                Log.d("STATUS", status.toString())
+                //Log.d("STATUS", status.toString())
 
                 listener?.invoke(status)
 
@@ -125,7 +125,7 @@ object StatusMonitor {
         }
 
         val downKbps = caps.linkDownstreamBandwidthKbps
-        Log.d("STATUS", " NET: $downKbps")
+        //Log.d("STATUS", " NET: $downKbps")
 
         return downKbps
     }

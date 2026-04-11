@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.plavatvlad.wayfare.R
@@ -15,6 +16,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import androidx.core.graphics.toColorInt
+import org.osmdroid.views.overlay.Marker
 
 class MapActivity : AppCompatActivity() {
 
@@ -23,6 +25,9 @@ class MapActivity : AppCompatActivity() {
     lateinit var netBubble: View
     lateinit var gpsIcon: ImageView
     lateinit var netIcon: ImageView
+    private var userMarker: Marker? = null
+
+    private var lastGPSTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +53,16 @@ class MapActivity : AppCompatActivity() {
         mapController.setZoom(12.0)
         mapController.setCenter(GeoPoint(44.4268, 26.1025)) // Bucharest
 
+        userMarker = Marker(map).apply {
+            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+            icon = ContextCompat.getDrawable(applicationContext, R.drawable.blue_dot)
+            infoWindow = null
+        }
+        map.overlays.add(userMarker)
 
         StatusMonitor.listener = { status ->
             runOnUiThread {
+
                 // GPS color
                 val gpsColor: Int = when {
                     !status.gpsLocked -> android.graphics.Color.RED
@@ -72,6 +84,31 @@ class MapActivity : AppCompatActivity() {
                 }
 
                 setBubbleColor(netBubble, netColor)
+
+                //GPS position
+                val lat = status.location?.latitude ?: return@runOnUiThread
+                val lon = status.location.longitude
+                val accuracy = status.gpsAccuracy ?: 0f
+
+                val point = GeoPoint(lat, lon)
+
+                // ---- update marker ----
+                if (userMarker == null) {
+                    userMarker = Marker(map).apply {
+                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+                        icon = ContextCompat.getDrawable(applicationContext, R.drawable.blue_dot)
+                    }
+                    map.overlays.add(userMarker)
+                }
+                userMarker?.position = point
+
+                if(status.gpsLocked) {
+                    if(System.currentTimeMillis() - lastGPSTime > 10000){
+                        map.controller.setZoom(18.0)
+                        map.controller.animateTo(userMarker?.position)
+                    }
+                    lastGPSTime = System.currentTimeMillis()
+                }
             }
 
         }
