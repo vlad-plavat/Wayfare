@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/emailLoginField"
         android:autofillHints="emailAddress"
         android:hint="@string/email"
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:inputType="textEmailAddress" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/passwordLoginField"
         android:autofillHints="password"
         android:hint="@string/password"
         android:layout_width="match_parent"
@@ -29,6 +29,12 @@
     <Button
         android:id="@+id/guestBtn"
         android:text="@string/continue_as_guest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/registerBtn"
+        android:text="Register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

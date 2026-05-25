@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "289662200719",
+    "project_id": "wayfare-d774b",
+    "storage_bucket": "wayfare-d774b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289662200719:android:0f69336a9a5a836feef9fa",
+        "android_client_info": {
+          "package_name": "com.plavatvlad.wayfare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL4--1AqWZAr57v1kfn6l0-IccxyoavfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
