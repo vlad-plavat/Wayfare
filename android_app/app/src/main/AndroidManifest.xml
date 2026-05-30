@@ -20,7 +20,7 @@
             android:name=".ui.MapActivity"
             android:exported="false" /-->
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".auth.LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +30,9 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.LoginActivity"
             android:exported="false" />
 
     </application>

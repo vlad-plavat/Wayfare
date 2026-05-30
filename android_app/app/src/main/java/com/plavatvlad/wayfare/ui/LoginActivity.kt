@@ -1,22 +1,27 @@
 package com.plavatvlad.wayfare.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.plavatvlad.wayfare.R
 import android.content.Intent
 import android.widget.EditText
 import com.google.firebase.auth.FirebaseAuth
 import android.widget.Toast
+import com.launchdarkly.sdk.LDContext
 import com.plavatvlad.wayfare.MainActivity
+import com.plavatvlad.wayfare.auth.LauncherActivity
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+
+    private fun buildContext(uid: String, email: String?, category: String): LDContext {
+        return LDContext.builder(uid)
+            .name(email ?: "unknown")
+            .set("category", category)
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,35 +40,23 @@ class LoginActivity : AppCompatActivity() {
             val email = emailInput.text.toString()
             val password = passwordInput.text.toString()
 
-            if(!email.isEmpty() && !password.isEmpty())
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
+            if (email.isNotEmpty() && password.isNotEmpty()) {
 
-                    if (task.isSuccessful) {
-
-                        Log.d("AUTH", "Login successful")
-                        Toast.makeText(
-                            this,
-                            "Login successful",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        goToMap()
-
-                    } else {
-
-                        Log.e("AUTH", "Login failed", task.exception)
-                        Toast.makeText(
-                            this,
-                            task.exception?.message ?: "Login failed",
-                            Toast.LENGTH_LONG
-                        ).show()
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnSuccessListener {
+                        goToLauncher()
                     }
-                }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
+                    }
+            }
         }
 
+        // GUEST
         guestBtn.setOnClickListener {
-            goToMap()
+
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
 
         registerBtn.setOnClickListener {
@@ -71,38 +64,21 @@ class LoginActivity : AppCompatActivity() {
             val email = emailInput.text.toString()
             val password = passwordInput.text.toString()
 
-            if(!email.isEmpty() && !password.isEmpty())
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
+            if (email.isNotEmpty() && password.isNotEmpty()) {
 
-                    if (task.isSuccessful) {
-
-                        Log.d("AUTH", "Registration successful")
-                        Toast.makeText(
-                            this,
-                            "Registration successful",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        goToMap()
-
-                    } else {
-
-                        Log.e("AUTH", "Registration failed", task.exception)
-                        Toast.makeText(
-                            this,
-                            task.exception?.message ?: "Registration failed",
-                            Toast.LENGTH_LONG
-                        ).show()
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnSuccessListener {
+                        goToLauncher()
                     }
-                }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
+                    }
+            }
         }
     }
 
-    private fun goToMap() {
-        val intent = Intent(this, MainActivity::class.java)
-        Log.d("MyApp", "Value of x\uD83D\uDC49\uD83D\uDC49: ia uite");
-        startActivity(intent)
+    private fun goToLauncher() {
+        startActivity(Intent(this, LauncherActivity::class.java))
         finish()
     }
 }

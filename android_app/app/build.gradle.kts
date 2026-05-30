@@ -76,4 +76,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.launchdarkly:launchdarkly-android-client-sdk:5.+")
+    implementation("com.google.firebase:firebase-firestore-ktx")
 }
