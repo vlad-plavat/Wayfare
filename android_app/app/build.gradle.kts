@@ -1,3 +1,5 @@
+import java.util.Properties // 1. Add this import
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,6 +11,9 @@ android {
     compileSdk {
         version = release(36)
     }
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.plavatvlad.wayfare"
@@ -18,6 +23,25 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { localProperties.load(it) }
+        }
+
+        // Fix 3: Read from the localProperties object, NOT from project.findProperty
+        val launchdarklyApiKey = localProperties.getProperty("LAUNCHDARKLY_MOBILE_KEY")
+            ?: error("LAUNCHDARKLY_MOBILE_KEY not found in local.properties. Check your file for typos!")
+
+
+        buildConfigField(
+            "String",
+            "LAUNCHDARKLY_MOBILE_KEY",
+            "\"$launchdarklyApiKey\""
+        )
+
     }
 
     buildTypes {
@@ -51,4 +75,5 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.material:material:1.11.0")
+    implementation("com.launchdarkly:launchdarkly-android-client-sdk:5.+")
 }

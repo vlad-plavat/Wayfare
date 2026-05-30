@@ -14,10 +14,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Wayfare">
-        <activity
+        android:theme="@style/Theme.Wayfare"
+        android:name=".WayfareApp">
+        <!--activity
             android:name=".ui.MapActivity"
-            android:exported="false" />
+            android:exported="false" /-->
         <activity
             android:name=".ui.LoginActivity"
             android:exported="true">

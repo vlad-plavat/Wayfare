@@ -94,7 +94,7 @@ object StatusMonitor {
                     internetQuality = net
                 )
 
-                Log.d("STATUS", status.toString())
+                //Log.d("STATUS", status.toString())
 
                 listener?.invoke(status)
 

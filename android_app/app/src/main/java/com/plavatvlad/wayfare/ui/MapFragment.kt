@@ -5,7 +5,10 @@ import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -98,8 +101,54 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 }
             }
         }
+
+        val aiFab = view.findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(
+            R.id.aiFab
+        )
+
+        aiFab.setOnClickListener {
+            showAIChatDialog()
+        }
     }
 
+
+    private fun showAIChatDialog() {
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_ai_chat, null)
+
+        val chatHistory = dialogView.findViewById<TextView>(R.id.chatHistory)
+        val chatInput = dialogView.findViewById<EditText>(R.id.chatInput)
+        val sendBtn = dialogView.findViewById<Button>(R.id.sendBtn)
+
+        val prefs = requireContext().getSharedPreferences("ai_chat", 0)
+
+        // Load saved chat
+        chatHistory.text = prefs.getString("history", "") ?: ""
+
+        sendBtn.setOnClickListener {
+
+            val message = chatInput.text.toString().trim()
+            if (message.isEmpty()) return@setOnClickListener
+
+            val old = chatHistory.text.toString()
+
+            val newChat = old + "\nYou: " + message
+
+            chatHistory.text = newChat
+
+            chatInput.setText("")
+
+            // Save (so it persists)
+            prefs.edit()
+                .putString("history", newChat)
+                .apply()
+        }
+
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setPositiveButton("Close", null)
+            .show()
+    }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun onStart() {
