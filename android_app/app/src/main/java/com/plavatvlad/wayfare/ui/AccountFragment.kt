@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.launchdarkly.sdk.LDContext
 import com.launchdarkly.sdk.android.LDClient
 import com.plavatvlad.wayfare.R
+import com.plavatvlad.wayfare.auth.UserRepository
 
 class AccountFragment : Fragment(R.layout.fragment_account) {
 
@@ -20,6 +21,9 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     private lateinit var btnSave: Button
     private lateinit var btnLogout: Button
 
+    private val repo = UserRepository()
+    private val uid = FirebaseAuth.getInstance().currentUser?.uid
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -28,6 +32,8 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         editPhone = view.findViewById(R.id.editPhone)
         btnSave = view.findViewById(R.id.btnSave)
         btnLogout = view.findViewById(R.id.btnLogout)
+
+        loadUser()
 
         // Example existing data
         editName.setText("Vlad")
@@ -67,6 +73,21 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
             startActivity(intent)
 
             requireActivity().finish()
+        }
+    }
+
+    private fun loadUser() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        repo.getUser(uid) { profile ->
+            if (profile == null) {
+                Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
+                return@getUser
+            }
+
+            editName.setText(profile.username)
+            editEmail.setText(profile.email)
+            editPhone.setText(profile.phone)
         }
     }
 }

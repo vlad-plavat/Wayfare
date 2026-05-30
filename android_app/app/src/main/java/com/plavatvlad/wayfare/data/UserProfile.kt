@@ -6,5 +6,6 @@ data class UserProfile(
     val email: String = "",
     val photoUrl: String? = null,
     val category: String = "regular",
-    val createdAt: String = ""
+    val createdAt: String = "",
+    val phone: String = ""
 )

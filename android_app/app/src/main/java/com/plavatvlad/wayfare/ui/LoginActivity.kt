@@ -11,6 +11,8 @@ import android.widget.Toast
 import com.launchdarkly.sdk.LDContext
 import com.plavatvlad.wayfare.MainActivity
 import com.plavatvlad.wayfare.auth.LauncherActivity
+import com.plavatvlad.wayfare.auth.UserRepository
+import com.plavatvlad.wayfare.data.UserProfile
 
 class LoginActivity : AppCompatActivity() {
 
@@ -67,7 +69,18 @@ class LoginActivity : AppCompatActivity() {
             if (email.isNotEmpty() && password.isNotEmpty()) {
 
                 auth.createUserWithEmailAndPassword(email, password)
-                    .addOnSuccessListener {
+                    .addOnSuccessListener {result ->
+                        val uid = result.user?.uid ?: return@addOnSuccessListener
+
+                        val newUser = UserProfile(
+                            id = uid,
+                            email = email,
+                            username = "unknown",
+                            category = "regular"
+                        )
+
+                        UserRepository().createUser(newUser)
+
                         goToLauncher()
                     }
                     .addOnFailureListener {
