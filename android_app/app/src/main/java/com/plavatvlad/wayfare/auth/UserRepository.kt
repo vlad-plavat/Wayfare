@@ -26,4 +26,10 @@ class UserRepository {
                 callback(null)
             }
     }
+
+    fun updateUser(user: UserProfile) {
+        db.collection("users")
+            .document(user.id)
+            .set(user)
+    }
 }

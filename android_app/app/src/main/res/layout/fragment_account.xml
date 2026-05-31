@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
     <LinearLayout
@@ -42,11 +43,36 @@
             android:inputType="phone"
             android:layout_marginBottom="24dp"/>
 
-        <Button
-            android:id="@+id/btnSave"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/categoryToggle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Changes"/>
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRegular"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Regular" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPremium"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Premium" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBetaTester"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Beta Tester" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
 
         <Button
             android:id="@+id/btnLogout"
