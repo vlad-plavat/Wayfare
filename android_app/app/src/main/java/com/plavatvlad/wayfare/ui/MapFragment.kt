@@ -18,6 +18,8 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import androidx.core.graphics.toColorInt
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.launchdarkly.sdk.android.LDClient
 import org.osmdroid.views.overlay.Marker
 
 class MapFragment : Fragment(R.layout.fragment_map) {
@@ -27,6 +29,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private lateinit var netBubble: View
     private lateinit var gpsIcon: ImageView
     private lateinit var netIcon: ImageView
+    private lateinit var aiFab : FloatingActionButton
 
     private var userMarker: Marker? = null
     private var lastGPSTime: Long = 0
@@ -46,6 +49,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         netBubble = view.findViewById(R.id.netBubble)
         gpsIcon = view.findViewById(R.id.gpsIcon)
         netIcon = view.findViewById(R.id.netIcon)
+        aiFab = view.findViewById(R.id.aiFab)
 
         map.setMultiTouchControls(true)
 
@@ -102,13 +106,19 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             }
         }
 
-        val aiFab = view.findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(
-            R.id.aiFab
-        )
-
+        LDClient.get().registerAllFlagsListener{ _ -> hideShowAI() }
+        hideShowAI()
         aiFab.setOnClickListener {
             showAIChatDialog()
         }
+    }
+
+    private fun hideShowAI(){
+        val showButton = LDClient.get().boolVariation(
+            "ai_chat_enabled",
+            false
+        )
+        aiFab.visibility = if (showButton) View.VISIBLE else View.GONE
     }
 
 

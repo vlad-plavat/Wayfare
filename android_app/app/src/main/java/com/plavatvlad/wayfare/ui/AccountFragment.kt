@@ -122,6 +122,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
 
         LDClient.get().identify(context)
 
+
         Toast.makeText(
             requireContext(),
             "Account updated",
