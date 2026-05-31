@@ -106,7 +106,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             }
         }
 
-        LDClient.get().registerAllFlagsListener{ _ -> hideShowAI() }
+        showIndicators()
+
+        LDClient.get().registerAllFlagsListener{ _ ->
+            hideShowAI()
+            showIndicators()
+        }
         hideShowAI()
         aiFab.setOnClickListener {
             showAIChatDialog()
@@ -121,6 +126,14 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         aiFab.visibility = if (showButton) View.VISIBLE else View.GONE
     }
 
+    private fun showIndicators(){
+        val indicators = LDClient.get().stringVariation(
+            "gps-network-status-indicators",
+            "both"
+        )
+        gpsBubble.visibility = if (indicators.contains("gps") || indicators.contains("both")) View.VISIBLE else View.GONE
+        netBubble.visibility = if (indicators.contains("net") || indicators.contains("both")) View.VISIBLE else View.GONE
+    }
 
     private fun showAIChatDialog() {
 
