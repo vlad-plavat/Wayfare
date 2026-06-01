@@ -59,4 +59,9 @@
         android:src="@drawable/ic_dialog_chat"
         android:contentDescription="AI Chat" />
 
+    <FrameLayout
+        android:id="@+id/overlay_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </FrameLayout>

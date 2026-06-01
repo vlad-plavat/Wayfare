@@ -7,6 +7,6 @@ data class Place(
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val createdBy: String = "",
-    val isPublic: Boolean = true,
+    val publicAvailable: Boolean = true,
     val createdAt: Long = System.currentTimeMillis()
 )

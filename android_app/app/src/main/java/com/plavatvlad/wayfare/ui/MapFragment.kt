@@ -59,7 +59,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         gpsIcon = view.findViewById(R.id.gpsIcon)
         netIcon = view.findViewById(R.id.netIcon)
         aiFab = view.findViewById(R.id.aiFab)
-        placeManager = PlaceManager(map, requireContext())
+        placeManager = PlaceManager(map, requireContext(), parentFragmentManager)
 
 
         map.setMultiTouchControls(true)
@@ -214,10 +214,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     latitude = point.latitude,
                     longitude = point.longitude,
                     createdBy = FirebaseAuth.getInstance().currentUser?.uid ?: "",
-                    isPublic = publicSwitch.isChecked
+                    publicAvailable = publicSwitch.isChecked
                 )
 
                 placeManager.savePlace(place)
+
             }
             .setNegativeButton("Cancel", null)
             .show()

@@ -1,0 +1,88 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- TITLE -->
+        <EditText
+            android:id="@+id/placeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Place name"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:inputType="textCapWords"
+            android:textColor="@android:color/black"
+            android:padding="12dp" />
+
+        <!-- COORDINATES (read-only) -->
+        <TextView
+            android:id="@+id/placeCoords"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Lat: -, Lng: -"
+            android:textSize="12sp"
+            android:textColor="@android:color/black"
+            android:alpha="0.6" />
+
+        <!-- NOTES -->
+        <EditText
+            android:id="@+id/placeDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Write notes about this place..."
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:textColor="@android:color/black"
+            android:padding="12dp" />
+
+        <!-- PUBLIC / PRIVATE -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Public place"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <Switch
+                android:id="@+id/publicSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- SAVE BUTTON -->
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Save changes" />
+
+        <!-- DELETE BUTTON (optional but useful) -->
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Delete place"
+            android:backgroundTint="#D32F2F"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+</ScrollView>

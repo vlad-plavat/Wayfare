@@ -3,4 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bubble_color">#AA000000</color>
+    <color name="public_marker">#4CAF50</color>
+    <color name="private_marker">#F44336</color>
 </resources>
