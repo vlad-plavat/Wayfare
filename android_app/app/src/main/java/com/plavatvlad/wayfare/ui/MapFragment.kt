@@ -114,8 +114,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
         hideShowAI()
         aiFab.setOnClickListener {
-            showAIChatDialog()
+            AIChatFragment().show(parentFragmentManager, "ai_chat")
         }
+
     }
 
     private fun hideShowAI(){
@@ -133,44 +134,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         )
         gpsBubble.visibility = if (indicators.contains("gps") || indicators.contains("both")) View.VISIBLE else View.GONE
         netBubble.visibility = if (indicators.contains("net") || indicators.contains("both")) View.VISIBLE else View.GONE
-    }
-
-    private fun showAIChatDialog() {
-
-        val dialogView = layoutInflater.inflate(R.layout.dialog_ai_chat, null)
-
-        val chatHistory = dialogView.findViewById<TextView>(R.id.chatHistory)
-        val chatInput = dialogView.findViewById<EditText>(R.id.chatInput)
-        val sendBtn = dialogView.findViewById<Button>(R.id.sendBtn)
-
-        val prefs = requireContext().getSharedPreferences("ai_chat", 0)
-
-        // Load saved chat
-        chatHistory.text = prefs.getString("history", "") ?: ""
-
-        sendBtn.setOnClickListener {
-
-            val message = chatInput.text.toString().trim()
-            if (message.isEmpty()) return@setOnClickListener
-
-            val old = chatHistory.text.toString()
-
-            val newChat = old + "\nYou: " + message
-
-            chatHistory.text = newChat
-
-            chatInput.setText("")
-
-            // Save (so it persists)
-            prefs.edit()
-                .putString("history", newChat)
-                .apply()
-        }
-
-        androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setPositiveButton("Close", null)
-            .show()
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])

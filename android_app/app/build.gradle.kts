@@ -31,15 +31,22 @@ android {
             localPropertiesFile.inputStream().use { localProperties.load(it) }
         }
 
-        // Fix 3: Read from the localProperties object, NOT from project.findProperty
         val launchdarklyApiKey = localProperties.getProperty("LAUNCHDARKLY_MOBILE_KEY")
             ?: error("LAUNCHDARKLY_MOBILE_KEY not found in local.properties. Check your file for typos!")
-
 
         buildConfigField(
             "String",
             "LAUNCHDARKLY_MOBILE_KEY",
             "\"$launchdarklyApiKey\""
+        )
+
+        val OpenRouterApiKey = localProperties.getProperty("OPENROUTER_KEY")
+            ?: error("OPENROUTER_KEY not found in local.properties. Check your file for typos!")
+
+        buildConfigField(
+            "String",
+            "OPENROUTER_KEY",
+            "\"$OpenRouterApiKey\""
         )
 
     }
@@ -77,4 +84,5 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.launchdarkly:launchdarkly-android-client-sdk:5.+")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }

@@ -11,6 +11,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.launchdarkly.sdk.android.LDClient
 import com.plavatvlad.wayfare.ui.AccountFragment
 import com.plavatvlad.wayfare.ui.MapFragment
+import okhttp3.Call
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttp
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Callback
+import okhttp3.Response
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -67,11 +76,7 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-    }
 
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
     }
 }
+
