@@ -1,16 +1,18 @@
 package com.plavatvlad.wayfare.ui
 
+import PlaceManager
 import androidx.fragment.app.Fragment
 import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresPermission
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import com.plavatvlad.wayfare.R
 import com.plavatvlad.wayfare.utils.StatusMonitor
@@ -19,7 +21,12 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import androidx.core.graphics.toColorInt
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.launchdarkly.sdk.android.LDClient
+import com.plavatvlad.wayfare.data.Place
+import org.osmdroid.events.MapEventsReceiver
+import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 
 class MapFragment : Fragment(R.layout.fragment_map) {
@@ -30,6 +37,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private lateinit var gpsIcon: ImageView
     private lateinit var netIcon: ImageView
     private lateinit var aiFab : FloatingActionButton
+    private lateinit var placeManager: PlaceManager
+
 
     private var userMarker: Marker? = null
     private var lastGPSTime: Long = 0
@@ -50,6 +59,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         gpsIcon = view.findViewById(R.id.gpsIcon)
         netIcon = view.findViewById(R.id.netIcon)
         aiFab = view.findViewById(R.id.aiFab)
+        placeManager = PlaceManager(map, requireContext())
+
 
         map.setMultiTouchControls(true)
 
@@ -63,6 +74,24 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         map.overlays.add(userMarker)
+
+        val mapEventsReceiver = object : MapEventsReceiver {
+
+            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                return false
+            }
+
+            override fun longPressHelper(p: GeoPoint?): Boolean {
+                p ?: return false
+
+                showAddPlaceDialog(p)
+
+                return true
+            }
+        }
+
+        val mapEventsOverlay = MapEventsOverlay(mapEventsReceiver)
+        map.overlays.add(mapEventsOverlay)
 
         Log.d("ceva", "ajung")
         StatusMonitor.listener = { status ->
@@ -117,6 +146,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             AIChatFragment().show(parentFragmentManager, "ai_chat")
         }
 
+        placeManager.loadPlaces()
+
+
     }
 
     private fun hideShowAI(){
@@ -149,5 +181,45 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun setBubbleColor(view: View, color: Int) {
         view.background?.mutate()?.setTint(color)
+    }
+
+    private fun showAddPlaceDialog(point: GeoPoint) {
+        val dialogView =
+            layoutInflater.inflate(R.layout.dialog_add_place, null)
+        val nameEdit =
+            dialogView.findViewById<EditText>(R.id.placeName)
+        val notesEdit =
+            dialogView.findViewById<EditText>(R.id.placeNotes)
+        val publicSwitch =
+            dialogView.findViewById<SwitchCompat>(R.id.publicSwitch)
+        val lonLatText = "Latitude: ${point.latitude}\nLongitude: ${point.longitude}"
+        dialogView.findViewById<TextView>(R.id.locationText).text =
+            lonLatText
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Add Place")
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+
+
+                val name = nameEdit.text.toString().trim()
+                val notes = notesEdit.text.toString().trim()
+
+                if (name.isEmpty()) return@setPositiveButton
+
+                val place = Place(
+                    id = FirebaseFirestore.getInstance().collection("places").document().id,
+                    name = name,
+                    description = notes,
+                    latitude = point.latitude,
+                    longitude = point.longitude,
+                    createdBy = FirebaseAuth.getInstance().currentUser?.uid ?: "",
+                    isPublic = publicSwitch.isChecked
+                )
+
+                placeManager.savePlace(place)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }
