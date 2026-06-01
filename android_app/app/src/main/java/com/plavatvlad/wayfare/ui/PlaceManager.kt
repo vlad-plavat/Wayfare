@@ -84,13 +84,28 @@ class PlaceManager(
                 }
             }
     }
+    fun loadPlace(placeId: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("places")
+        .document(placeId).get()
+        .addOnSuccessListener { result ->
+
+            map.overlays.removeAll { it is Marker  && it.relatedObject == placeId}
+            val place = result.toObject(Place::class.java)
+            if(place != null)
+                addPlaceMarker(place)
+
+        }
+    }
 
     fun savePlace(place: Place) {
         FirebaseFirestore.getInstance()
             .collection("places")
             .document(place.id)
             .set(place)
-        addPlaceMarker(place)
+        loadPlaces()
+
     }
 
     private fun openPlaceDetails(placeId: String) {

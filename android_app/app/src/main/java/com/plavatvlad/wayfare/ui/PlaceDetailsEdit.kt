@@ -74,6 +74,14 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
         db.collection("places")
             .document(placeId)
             .update(updated)
+            .addOnSuccessListener {
+                parentFragmentManager.setFragmentResult(
+                    "place_updated",
+                    Bundle().apply {
+                        putString("placeId", placeId)
+                    }
+                )
+            }
     }
 
     companion object {

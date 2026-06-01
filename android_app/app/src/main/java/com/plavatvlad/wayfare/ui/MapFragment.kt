@@ -148,6 +148,20 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         placeManager.loadPlaces()
 
+        activity?.supportFragmentManager?.setFragmentResultListener(
+            "place_updated",
+            viewLifecycleOwner
+        ) { _, bundle ->
+
+            val placeId = bundle.getString("placeId")
+
+            if (placeId != null) {
+                placeManager.loadPlace(placeId)
+            } else {
+                placeManager.loadPlaces()
+            }
+        }
+
 
     }
 

@@ -18,6 +18,8 @@ class PlaceDetailsFragment : Fragment(R.layout.fragment_place_details) {
 
     private lateinit var nameEdit: TextView
     private lateinit var notesEdit: TextView
+    private lateinit var coordsText: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,8 @@ class PlaceDetailsFragment : Fragment(R.layout.fragment_place_details) {
 
         nameEdit = view.findViewById(R.id.placeName)
         notesEdit = view.findViewById(R.id.placeDetails)
+        coordsText = view.findViewById(R.id.placeCoords)
+
 
         loadPlace()
     }
@@ -46,6 +50,7 @@ class PlaceDetailsFragment : Fragment(R.layout.fragment_place_details) {
 
                 nameEdit.text = place.name
                 notesEdit.text = place.description
+                coordsText.text = "Lat: ${place.latitude}, Lng: ${place.longitude}"
 
             }
     }
