@@ -7,14 +7,17 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.launchdarkly.sdk.LDContext
 import com.launchdarkly.sdk.android.LDClient
 import com.plavatvlad.wayfare.R
 import com.plavatvlad.wayfare.auth.UserRepository
 import com.plavatvlad.wayfare.data.UserProfile
+import com.plavatvlad.wayfare.utils.LocationTrackingService
 import kotlin.text.category
 
 class AccountFragment : Fragment(R.layout.fragment_account) {
@@ -27,6 +30,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     private lateinit var categoryToggle: MaterialButtonToggleGroup
     private var isLoadingProfile = true;
     private var selectedCategory = "regular"
+    private lateinit var switchSafetyTracking: SwitchMaterial
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,6 +39,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         editEmail = view.findViewById(R.id.editEmail)
         editPhone = view.findViewById(R.id.editPhone)
         btnLogout = view.findViewById(R.id.btnLogout)
+        switchSafetyTracking = view.findViewById(R.id.switchSafetyTracking)
 
         categoryToggle = view.findViewById(R.id.categoryToggle)
 
@@ -74,6 +79,23 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
             startActivity(intent)
 
             requireActivity().finish()
+        }
+
+        val prefs = requireContext().getSharedPreferences("settings", 0)
+        val enabled = prefs.getBoolean("safety_tracking", false)
+
+        switchSafetyTracking.isChecked = enabled
+        if(enabled){
+            startSafetyTracking()
+        }
+
+        switchSafetyTracking.setOnCheckedChangeListener { _, isChecked ->
+            saveTrackingState(isChecked)
+            if (isChecked) {
+                startSafetyTracking()
+            } else {
+                stopSafetyTracking()
+            }
         }
     }
 
@@ -129,4 +151,25 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
             Toast.LENGTH_SHORT
         ).show()
     }
+
+    private fun startSafetyTracking() {
+        val intent = Intent(requireContext(), LocationTrackingService::class.java)
+        intent.putExtra("tracking_enabled", true)
+
+        ContextCompat.startForegroundService(requireContext(), intent)
+    }
+
+    private fun stopSafetyTracking() {
+        val intent = Intent(requireContext(), LocationTrackingService::class.java)
+        intent.action = LocationTrackingService.ACTION_STOP
+
+        ContextCompat.startForegroundService(requireContext(), intent)
+    }
+
+    private fun saveTrackingState(enabled: Boolean) {
+        val prefs = requireContext().getSharedPreferences("settings", 0)
+        prefs.edit().putBoolean("safety_tracking", enabled).apply()
+    }
+
+
 }

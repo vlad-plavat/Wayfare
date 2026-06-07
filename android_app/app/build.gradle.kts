@@ -87,5 +87,6 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 }

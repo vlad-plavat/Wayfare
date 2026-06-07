@@ -232,7 +232,6 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                                     "Delete failed: ${e.localizedMessage}",
                                     Toast.LENGTH_LONG
                                 ).show()
-                                Log.d("Delete failed", e.localizedMessage)
                             }
                     }
             }
