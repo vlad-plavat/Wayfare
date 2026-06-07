@@ -9,5 +9,7 @@ data class Place(
     val createdBy: String = "",
     val publicAvailable: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
-    val photoUrls: List<String> = emptyList()
+    val photoUrls: List<String> = emptyList(),
+    val ratingAverage: Double = 0.0,
+    val ratingCount: Int = 0
 )

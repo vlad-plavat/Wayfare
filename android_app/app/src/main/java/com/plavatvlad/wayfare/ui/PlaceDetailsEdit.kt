@@ -36,6 +36,8 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
     private lateinit var saveButton: Button
     private lateinit var deleteButton: Button
     private lateinit var imagesAdapter: PlaceImagesAdapter
+    private lateinit var ratingSummary: TextView
+    private lateinit var rateButton: Button
 
     private val pickImage =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -60,6 +62,8 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
         saveButton = view.findViewById(R.id.saveButton)
         deleteButton = view.findViewById(R.id.deleteButton)
         publicSwitch = view.findViewById(R.id.publicSwitch)
+        ratingSummary = view.findViewById(R.id.ratingSummary)
+        rateButton = view.findViewById(R.id.rateButton)
         loadPlace(view)
 
         saveButton.setOnClickListener {
@@ -70,6 +74,26 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
         addImageButton.setOnClickListener {
             pickImage.launch("image/*")
         }
+
+        ratingSummary.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .add(
+                    R.id.fragmentContainer,
+                    ReviewsListFragment.newInstance(placeId)
+                )
+                .addToBackStack(null)
+                .commit()
+        }
+
+        /*rateButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .add(
+                    R.id.fragmentContainer,
+                    AddReviewFragment.newInstance(placeId)
+                )
+                .addToBackStack(null)
+                .commit()
+        }*/
 
     }
 
@@ -86,6 +110,7 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                 notesEdit.setText(place.description)
                 publicSwitch.isChecked = place.publicAvailable
                 coordsText.text = "Lat: ${place.latitude}, Lng: ${place.longitude}"
+                ratingSummary.text = "⭐ ${place.ratingAverage} (${place.ratingCount} reviews)"
 
                 val recyclerView = view.findViewById<RecyclerView>(R.id.imagesRecyclerView)
 
@@ -124,6 +149,11 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                         FieldValue.arrayRemove(imageUrl)
                     )
                     .addOnSuccessListener {
+                        Toast.makeText(
+                            requireContext(),
+                            "Delete successful",
+                            Toast.LENGTH_LONG
+                        ).show()
                         loadPlace(requireView())
                     }
             }
@@ -166,6 +196,11 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                     .document(placeId)
                     .update("photoUrls", com.google.firebase.firestore.FieldValue.arrayUnion(downloadUrl.toString()))
                     .addOnSuccessListener {
+                        Toast.makeText(
+                            requireContext(),
+                            "Upload successful",
+                            Toast.LENGTH_LONG
+                        ).show()
                         loadPlace(requireView())
                     }
             }.addOnFailureListener { e ->
