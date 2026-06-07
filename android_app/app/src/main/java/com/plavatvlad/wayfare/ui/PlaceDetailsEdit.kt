@@ -69,6 +69,9 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
         saveButton.setOnClickListener {
             saveChanges()
         }
+        deleteButton.setOnClickListener {
+            showDeletePlaceDialog()
+        }
         val addImageButton = view.findViewById<Button>(R.id.addImageButton)
 
         addImageButton.setOnClickListener {
@@ -110,7 +113,7 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                 notesEdit.setText(place.description)
                 publicSwitch.isChecked = place.publicAvailable
                 coordsText.text = "Lat: ${place.latitude}, Lng: ${place.longitude}"
-                ratingSummary.text = "⭐ ${place.ratingAverage} (${place.ratingCount} reviews)"
+                    ratingSummary.text = "⭐ ${"%.1f".format(place.ratingAverage)} (${place.ratingCount} reviews)"
 
                 val recyclerView = view.findViewById<RecyclerView>(R.id.imagesRecyclerView)
 
@@ -176,6 +179,69 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                         putString("placeId", placeId)
                     }
                 )
+            }
+    }
+
+    private fun showDeletePlaceDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete place")
+            .setMessage("Are you sure you want to delete this place?")
+            .setPositiveButton("Delete") { _, _ ->
+                deletePlace()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deletePlace() {
+
+        val imagesRef = FirebaseStorage.getInstance()
+            .reference
+            .child("places/$placeId")
+
+        imagesRef.listAll()
+            .addOnSuccessListener { result ->
+
+                val deleteTasks = result.items.map { it.delete() }
+
+                com.google.android.gms.tasks.Tasks
+                    .whenAllComplete(deleteTasks)
+                    .addOnSuccessListener {
+
+                        db.collection("places")
+                            .document(placeId)
+                            .delete()
+                            .addOnSuccessListener {
+
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Place deleted",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                parentFragmentManager.setFragmentResult(
+                                    "place_updated",
+                                    Bundle().apply {
+                                        putString("placeId", placeId)
+                                    }
+                                )
+                                parentFragmentManager.popBackStack()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Delete failed: ${e.localizedMessage}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                Log.d("Delete failed", e.localizedMessage)
+                            }
+                    }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to delete images: ${e.localizedMessage}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
     }
 

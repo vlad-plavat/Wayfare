@@ -86,12 +86,11 @@ class PlaceManager(
     }
     fun loadPlace(placeId: String) {
         val db = FirebaseFirestore.getInstance()
-
+        Log.d("ceva", placeId)
+        map.overlays.removeAll { it is Marker  && it.relatedObject == placeId}
         db.collection("places")
         .document(placeId).get()
         .addOnSuccessListener { result ->
-
-            map.overlays.removeAll { it is Marker  && it.relatedObject == placeId}
             val place = result.toObject(Place::class.java)
             if(place != null)
                 addPlaceMarker(place)

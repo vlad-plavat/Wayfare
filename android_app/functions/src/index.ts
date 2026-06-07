@@ -1,15 +1,15 @@
-const { onDocumentWritten } = require("firebase-functions/v2/firestore");
-const admin = require("firebase-admin");
+import {onDocumentWritten} from "firebase-functions/v2/firestore";
+import * as admin from "firebase-admin";
 
 admin.initializeApp();
 
-exports.updatePlaceRating = onDocumentWritten(
+export const updatePlaceRating = onDocumentWritten(
   "places/{placeId}/reviews/{userId}",
   async (event) => {
-
     const placeId = event.params.placeId;
 
-    const reviews = await admin.firestore()
+    const reviewsSnapshot = await admin
+      .firestore()
       .collection("places")
       .doc(placeId)
       .collection("reviews")
@@ -17,19 +17,20 @@ exports.updatePlaceRating = onDocumentWritten(
 
     let total = 0;
 
-    reviews.forEach(doc => {
-      total += doc.data().rating || 0;
+    reviewsSnapshot.forEach((doc) => {
+      total += Number(doc.data().rating ?? 0);
     });
 
-    const count = reviews.size;
+    const count = reviewsSnapshot.size;
     const average = count > 0 ? total / count : 0;
 
-    await admin.firestore()
+    await admin
+      .firestore()
       .collection("places")
       .doc(placeId)
       .update({
-        averageRating: average,
-        reviewCount: count
+        ratingAverage: average,
+        ratingCount: count,
       });
   }
 );
