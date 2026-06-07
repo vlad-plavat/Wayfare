@@ -8,5 +8,6 @@ data class Place(
     val longitude: Double = 0.0,
     val createdBy: String = "",
     val publicAvailable: Boolean = true,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val photoUrls: List<String> = emptyList()
 )

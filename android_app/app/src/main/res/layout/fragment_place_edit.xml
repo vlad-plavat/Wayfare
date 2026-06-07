@@ -60,10 +60,35 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/publicSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- IMAGE GALLERY -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/imagesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:overScrollMode="never"
+                android:clipToPadding="false"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp" />
+
+            <!-- ADD IMAGE BUTTON -->
+            <Button
+                android:id="@+id/addImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Add image" />
         </LinearLayout>
 
         <!-- SAVE BUTTON -->
