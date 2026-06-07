@@ -86,6 +86,13 @@
             android:layout_height="wrap_content"
             android:text="Safety location tracking" />
 
+        <Button
+            android:id="@+id/btnFriends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Friends"
+            android:layout_marginTop="16dp"/>
+
     </LinearLayout>
 
 </ScrollView>

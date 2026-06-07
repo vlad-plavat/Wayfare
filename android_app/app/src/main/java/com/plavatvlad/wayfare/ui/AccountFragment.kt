@@ -32,6 +32,8 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     private var selectedCategory = "regular"
     private lateinit var switchSafetyTracking: SwitchMaterial
 
+    private lateinit var friendsButton: Button
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,6 +42,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         editPhone = view.findViewById(R.id.editPhone)
         btnLogout = view.findViewById(R.id.btnLogout)
         switchSafetyTracking = view.findViewById(R.id.switchSafetyTracking)
+        friendsButton = view.findViewById(R.id.btnFriends)
 
         categoryToggle = view.findViewById(R.id.categoryToggle)
 
@@ -96,6 +99,13 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
             } else {
                 stopSafetyTracking()
             }
+        }
+
+        friendsButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .add(R.id.fragmentContainer, FriendsFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 
