@@ -85,7 +85,7 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                 .commit()
         }
 
-        /*rateButton.setOnClickListener {
+        rateButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .add(
                     R.id.fragmentContainer,
@@ -93,7 +93,7 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                 )
                 .addToBackStack(null)
                 .commit()
-        }*/
+        }
 
     }
 
