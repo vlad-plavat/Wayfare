@@ -14,7 +14,6 @@ import com.plavatvlad.wayfare.ui.PlaceDetailsEdit
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import com.plavatvlad.wayfare.ui.PlaceDetailsFragment
 
 class PlaceManager(
     private val map: MapView,
@@ -122,7 +121,7 @@ class PlaceManager(
                 val fragment = if (createdBy == uid) {
                     PlaceDetailsEdit.newInstance(placeId)
                 } else {
-                    PlaceDetailsFragment.newInstance(placeId)
+                    PlaceDetailsEdit.newInstance(placeId, false)
                 }
 
                 activity.supportFragmentManager

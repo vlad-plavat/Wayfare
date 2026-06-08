@@ -26,6 +26,7 @@ import java.util.UUID
 class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
 
     private lateinit var placeId: String
+    private lateinit var editable: String
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -51,6 +52,7 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
 
         placeId = arguments?.getString(ARG_PLACE_ID)
             ?: error("placeId missing")
+        editable = (arguments?.getBoolean("editable") ?: true).toString()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,6 +66,22 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
         publicSwitch = view.findViewById(R.id.publicSwitch)
         ratingSummary = view.findViewById(R.id.ratingSummary)
         rateButton = view.findViewById(R.id.rateButton)
+        val addImageButton = view.findViewById<Button>(R.id.addImageButton)
+        if(editable == false.toString()){
+            saveButton.visibility = View.GONE
+            deleteButton.visibility = View.GONE
+            addImageButton.visibility = View.GONE
+            val publicSwitchContainer = view.findViewById<View>(R.id.publicSwitchContainer)
+            publicSwitchContainer.visibility = View.GONE
+            listOf(nameEdit, notesEdit).forEach {
+                it.isFocusable = false
+                it.isFocusableInTouchMode = false
+                it.isCursorVisible = false
+                it.isLongClickable = false
+                it.keyListener = null
+                it.background = null
+            }
+        }
         loadPlace(view)
 
         saveButton.setOnClickListener {
@@ -72,7 +90,6 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
         deleteButton.setOnClickListener {
             showDeletePlaceDialog()
         }
-        val addImageButton = view.findViewById<Button>(R.id.addImageButton)
 
         addImageButton.setOnClickListener {
             pickImage.launch("image/*")
@@ -120,7 +137,7 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                 recyclerView.layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-                imagesAdapter = PlaceImagesAdapter(place.photoUrls){
+                imagesAdapter = PlaceImagesAdapter(place.photoUrls, editable == "true"){
                     imageUrl -> showDeleteImageDialog(imageUrl)
                 }
                 recyclerView.adapter = imagesAdapter
@@ -280,10 +297,11 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
     companion object {
         private const val ARG_PLACE_ID = "place_id"
 
-        fun newInstance(placeId: String): PlaceDetailsEdit {
+        fun newInstance(placeId: String, editable: Boolean = true): PlaceDetailsEdit {
             return PlaceDetailsEdit().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PLACE_ID, placeId)
+                    putBoolean("editable", editable)
                 }
             }
         }

@@ -10,6 +10,7 @@ import com.plavatvlad.wayfare.R
 
 class PlaceImagesAdapter(
     private var images: List<String>,
+    private val canManageImages: Boolean,
     private val onLongClick: (String) -> Unit
 ) : RecyclerView.Adapter<PlaceImagesAdapter.ImageViewHolder>() {
 
@@ -30,9 +31,14 @@ class PlaceImagesAdapter(
             .load(images[position])
             .into(holder.imageView)
 
-        holder.imageView.setOnLongClickListener {
-            onLongClick(url)
-            true
+        if (canManageImages) {
+            holder.imageView.setOnLongClickListener {
+                onLongClick(url)
+                true
+            }
+        } else {
+            holder.imageView.setOnLongClickListener(null)
+            holder.imageView.isLongClickable = false
         }
     }
 
