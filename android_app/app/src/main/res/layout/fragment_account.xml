@@ -87,6 +87,21 @@
             android:text="Safety location tracking" />
 
         <Button
+            android:id="@+id/btnPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="See my path"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btnDeleteLoc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete location data"
+            android:backgroundTint="#D32F2F"
+            android:layout_marginTop="16dp"/>
+
+        <Button
             android:id="@+id/btnFriends"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

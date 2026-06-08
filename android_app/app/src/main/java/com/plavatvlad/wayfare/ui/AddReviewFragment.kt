@@ -65,7 +65,7 @@ class AddReviewFragment : Fragment(R.layout.fragment_add_review) {
         }
 
         deleteButton.setOnClickListener {
-            deleteReview()
+            deleteReviewPopup()
         }
     }
 
@@ -99,18 +99,18 @@ class AddReviewFragment : Fragment(R.layout.fragment_add_review) {
             }
     }
 
-    private fun deleteReview(){
+    private fun deleteReviewPopup(){
         AlertDialog.Builder(requireContext())
             .setTitle("Remove review")
             .setMessage("Do you want to remove your review?")
             .setPositiveButton("Yes") { _, _ ->
-                deleteImage()
+                deleteReview()
             }
             .setNegativeButton("No", null)
             .show()
     }
 
-    private fun deleteImage() {
+    private fun deleteReview() {
         db.collection("places")
             .document(placeId)
             .collection("reviews")

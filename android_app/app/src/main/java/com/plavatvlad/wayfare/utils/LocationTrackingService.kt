@@ -76,7 +76,7 @@ class LocationTrackingService : Service() {
     }
 
     private fun saveToFirestore(location: android.location.Location) {
-        //Log.d("LocationTrackingService", "Saving location: $location")
+        Log.d("LocationTrackingService", "Saving location: $location")
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val db = FirebaseFirestore.getInstance()
 

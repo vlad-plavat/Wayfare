@@ -7,11 +7,16 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.launchdarkly.sdk.LDContext
 import com.launchdarkly.sdk.android.LDClient
 import com.plavatvlad.wayfare.R
@@ -31,8 +36,9 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     private var isLoadingProfile = true;
     private var selectedCategory = "regular"
     private lateinit var switchSafetyTracking: SwitchMaterial
-
     private lateinit var friendsButton: Button
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -107,12 +113,20 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
                 .addToBackStack(null)
                 .commit()
         }
+
+        view.findViewById<Button>(R.id.btnDeleteLoc).setOnClickListener {
+            showDeleteLocData()
+        }
+
+        view.findViewById<Button>(R.id.btnPath).setOnClickListener {
+            val dialog = FriendMapFragment.newInstance(userId, "")
+            dialog.show(parentFragmentManager, "friend_map")
+        }
     }
 
     private fun loadUser() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        repo.getUser(uid) { profile ->
+        repo.getUser(userId) { profile ->
             if (profile == null) {
                 Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
                 return@getUser
@@ -135,10 +149,9 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     }
 
     private fun saveProfile() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
         val updatedUser = UserProfile(
-            id = uid,
+            id = userId,
             username = editName.text.toString(),
             email = editEmail.text.toString(),
             phone = editPhone.text.toString(),
@@ -147,7 +160,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
 
         repo.updateUser(updatedUser)
 
-        val context = LDContext.builder(uid)
+        val context = LDContext.builder(userId)
             .name(updatedUser.email)
             .set("category", selectedCategory)
             .build()
@@ -181,5 +194,57 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         prefs.edit().putBoolean("safety_tracking", enabled).apply()
     }
 
+    private fun showDeleteLocData() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete location data")
+            .setMessage("Are you sure you want to delete your tracking data?")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteLocData()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
 
+    private fun deleteLocData() {
+        val db = FirebaseFirestore.getInstance()
+
+        deleteTrackingBatch(db)
+    }
+
+    private fun deleteTrackingBatch(db: FirebaseFirestore, lastDoc: DocumentSnapshot? = null) {
+
+        var query = db.collection("users")
+            .document(userId)
+            .collection("tracking")
+            .limit(500)
+
+        // continue from last snapshot if needed
+        if (lastDoc != null) {
+            query = query.startAfter(lastDoc)
+        }
+
+        query.get()
+            .addOnSuccessListener { snap ->
+
+                if (snap.isEmpty) {
+                    parentFragmentManager.popBackStack()
+                    return@addOnSuccessListener
+                }
+
+                val batch = db.batch()
+
+                for (doc in snap.documents) {
+                    batch.delete(doc.reference)
+                }
+
+                batch.commit()
+                    .addOnSuccessListener {
+                        // recursively continue deleting next chunk
+                        deleteTrackingBatch(db, snap.documents.last())
+                    }
+                    .addOnFailureListener { e ->
+                        Log.d("DeleteTracking", "Error: ${e.message}")
+                    }
+            }
+    }
 }
