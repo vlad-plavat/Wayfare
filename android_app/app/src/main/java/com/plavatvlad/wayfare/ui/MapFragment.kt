@@ -83,7 +83,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
             override fun longPressHelper(p: GeoPoint?): Boolean {
                 p ?: return false
-
+                if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true)
+                    return false
                 showAddPlaceDialog(p)
 
                 return true

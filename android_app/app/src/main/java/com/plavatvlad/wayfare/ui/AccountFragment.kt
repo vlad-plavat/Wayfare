@@ -122,11 +122,30 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
             val dialog = FriendMapFragment.newInstance(userId, "")
             dialog.show(parentFragmentManager, "friend_map")
         }
+
+        if(FirebaseAuth.getInstance().currentUser?.isAnonymous ?: false){
+            friendsButton.visibility = View.GONE
+            view.findViewById<Button>(R.id.btnDeleteLoc).visibility = View.GONE
+            view.findViewById<Button>(R.id.btnPath).visibility = View.GONE
+            view.findViewById<SwitchMaterial>(R.id.switchSafetyTracking).visibility = View.GONE
+            categoryToggle.visibility = View.GONE
+            editName.visibility = View.GONE
+            editEmail.visibility = View.GONE
+            editPhone.visibility = View.GONE
+
+            editName.isEnabled = false
+            editEmail.isEnabled = false
+            editPhone.isEnabled = false
+        }
     }
 
     private fun loadUser() {
 
         repo.getUser(userId) { profile ->
+            if(FirebaseAuth.getInstance().currentUser?.isAnonymous ?: false){
+                return@getUser
+            }
+
             if (profile == null) {
                 Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
                 return@getUser

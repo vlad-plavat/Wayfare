@@ -19,6 +19,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.storage.FirebaseStorage
 import java.util.UUID
@@ -81,6 +82,9 @@ class PlaceDetailsEdit : Fragment(R.layout.fragment_place_edit) {
                 it.keyListener = null
                 it.background = null
             }
+        }
+        if(FirebaseAuth.getInstance().currentUser?.isAnonymous == true){
+            rateButton.visibility = View.GONE
         }
         loadPlace(view)
 

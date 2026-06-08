@@ -5,6 +5,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.plavatvlad.wayfare.R
 import android.content.Intent
+import android.util.Log
 import android.widget.EditText
 import com.google.firebase.auth.FirebaseAuth
 import android.widget.Toast
@@ -56,9 +57,12 @@ class LoginActivity : AppCompatActivity() {
 
         // GUEST
         guestBtn.setOnClickListener {
-
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            auth.signInAnonymously().addOnSuccessListener {
+                Log.d("LauncherActivity", auth.currentUser?.uid.toString())
+                goToLauncher()
+            }.addOnFailureListener { e ->
+                Log.d("LauncherActivity", e.message.toString())
+            }
         }
 
         registerBtn.setOnClickListener {
