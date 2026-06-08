@@ -74,6 +74,10 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
             //Firebase logout
             FirebaseAuth.getInstance().signOut()
 
+            //stop tracking
+            saveTrackingState(false)
+            stopSafetyTracking()
+
             //reset LaunchDarkly context
             val context = LDContext.builder("guest")
                 .anonymous(true)
