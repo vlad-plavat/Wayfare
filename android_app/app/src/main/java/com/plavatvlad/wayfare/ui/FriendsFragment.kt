@@ -31,9 +31,10 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         editSearch = view.findViewById(R.id.editSearchUser)
         btnAdd = view.findViewById(R.id.btnAddFriend)
 
-        adapter = FriendAdapter { friendId ->
-            removeFriend(friendId)
-        }
+        adapter = FriendAdapter(
+            onRemove = { removeFriend(it) },
+            onMap = { openFriendMap(it) }
+        )
 
         recycler.layoutManager = LinearLayoutManager(requireContext())
         recycler.adapter = adapter
@@ -46,9 +47,6 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         loadFriends()
     }
 
-    // -------------------------
-    // LOAD FRIENDS (REALTIME)
-    // -------------------------
     private fun loadFriends() {
         db.collection("users")
             .document(myUid)
@@ -65,9 +63,6 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             }
     }
 
-    // -------------------------
-    // SEARCH USER + ADD FRIEND
-    // -------------------------
     private fun findAndAddFriend(username: String) {
         db.collection("users")
             .whereEqualTo("username", username)
@@ -87,9 +82,6 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             }
     }
 
-    // -------------------------
-    // ADD FRIEND (SYMMETRIC)
-    // -------------------------
     private fun addFriend(friendUid: String) {
 
         val empty = mapOf<String, Any>()
@@ -104,9 +96,6 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             .set(empty)
     }
 
-    // -------------------------
-    // REMOVE FRIEND (SYMMETRIC)
-    // -------------------------
     private fun removeFriend(friendUid: String) {
 
         db.collection("users").document(myUid)
@@ -117,5 +106,15 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         db.collection("users").document(friendUid)
             .collection("friends").document(myUid)
             .delete()
+    }
+
+    private fun openFriendMap(friendUid: String) {
+        db.collection("users").document(friendUid).get()
+            .addOnSuccessListener { snap ->
+                val dialog = FriendMapFragment.newInstance(friendUid, snap.getString("username") ?: "")
+
+                dialog.show(parentFragmentManager, "friend_map")
+            }
+
     }
 }

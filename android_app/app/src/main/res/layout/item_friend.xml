@@ -15,6 +15,14 @@
         android:textColor="@color/black"
         android:textSize="16sp" />
 
+    <ImageButton
+        android:id="@+id/btnMap"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_map"
+        android:contentDescription="Map"
+        android:background="?attr/selectableItemBackground"/>
+
     <Button
         android:id="@+id/btnRemove"
         android:layout_width="wrap_content"

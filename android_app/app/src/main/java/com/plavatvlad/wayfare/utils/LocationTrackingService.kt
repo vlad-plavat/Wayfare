@@ -83,7 +83,8 @@ class LocationTrackingService : Service() {
         val data = mapOf(
             "lat" to location.latitude,
             "lng" to location.longitude,
-            "accuracy" to location.accuracy
+            "accuracy" to location.accuracy,
+            "timestamp" to System.currentTimeMillis()
         )
 
         db.collection("users")
