@@ -2,6 +2,7 @@ import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import * as admin from "firebase-admin";
 
 admin.initializeApp();
+export * from "./feed";
 
 export const updatePlaceRating = onDocumentWritten(
   "places/{placeId}/reviews/{userId}",

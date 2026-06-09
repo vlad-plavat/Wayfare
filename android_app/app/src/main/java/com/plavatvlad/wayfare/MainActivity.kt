@@ -11,6 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.launchdarkly.sdk.android.LDClient
 import com.plavatvlad.wayfare.ui.AccountFragment
 import com.plavatvlad.wayfare.ui.MapFragment
+import com.plavatvlad.wayfare.ui.PlacesFragment
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttp
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     private val mapFragment = MapFragment()
     private val accountFragment = AccountFragment()
-    //private val historyFragment = HistoryFragment()
+    private val placesFragment = PlacesFragment()
     //private val settingsFragment = SettingsFragment()
 
     private var active: Fragment = mapFragment
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager.beginTransaction()
             //.add(R.id.fragmentContainer, settingsFragment, "4").hide(settingsFragment)
-            //.add(R.id.fragmentContainer, historyFragment, "3").hide(historyFragment)
+            .add(R.id.fragmentContainer, placesFragment, "3").hide(placesFragment)
             .add(R.id.fragmentContainer, accountFragment, "2").hide(accountFragment)
             .add(R.id.fragmentContainer, mapFragment, "1")
             .commit()
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.nav_map -> switchFragment(mapFragment)
                 R.id.nav_account -> switchFragment(accountFragment)
-                //R.id.nav_history -> switchFragment(historyFragment)
+                R.id.nav_places -> switchFragment(placesFragment)
                 //R.id.nav_settings -> switchFragment(settingsFragment)
             }
             true

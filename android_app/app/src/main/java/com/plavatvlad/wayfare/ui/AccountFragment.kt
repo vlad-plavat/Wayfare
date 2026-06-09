@@ -209,7 +209,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         val intent = Intent(requireContext(), LocationTrackingService::class.java)
         intent.action = LocationTrackingService.ACTION_STOP
 
-        ContextCompat.startForegroundService(requireContext(), intent)
+        requireContext().startService(intent)
     }
 
     private fun saveTrackingState(enabled: Boolean) {

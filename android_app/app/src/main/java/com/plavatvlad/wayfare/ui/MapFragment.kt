@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.launchdarkly.sdk.android.LDClient
+import com.plavatvlad.wayfare.data.LocationHolder
 import com.plavatvlad.wayfare.data.Place
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.views.overlay.MapEventsOverlay
@@ -133,6 +134,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     }
                     lastGPSTime = System.currentTimeMillis()
                 }
+
+                LocationHolder.lat = lat
+                LocationHolder.lng = lon
             }
         }
 
