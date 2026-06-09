@@ -33,6 +33,9 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             android:inputType="textEmailAddress"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
             android:layout_marginBottom="16dp"/>
 
         <EditText

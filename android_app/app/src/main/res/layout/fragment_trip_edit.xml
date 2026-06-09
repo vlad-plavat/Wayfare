@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <!-- TRIP NAME -->
+    <EditText
+        android:id="@+id/tripNameInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Trip name"
+        android:textSize="18sp"/>
+
+    <!-- ADD PLACE (simple MVP input) -->
+    <EditText
+        android:id="@+id/addPlaceInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Add place ID or name"
+        android:layout_marginTop="12dp"/>
+
+    <Button
+        android:id="@+id/addPlaceButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add place"
+        android:layout_marginTop="8dp"/>
+
+    <!-- CURRENT PLACES -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Places in trip:"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp"/>
+
+    <TextView
+        android:id="@+id/placesListText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="• Empty"
+        android:layout_marginTop="4dp"
+        android:alpha="0.8"/>
+
+    <!-- SAVE -->
+    <Button
+        android:id="@+id/saveTripButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save trip"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

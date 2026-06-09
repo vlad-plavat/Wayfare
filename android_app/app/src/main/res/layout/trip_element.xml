@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/tripName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Weekend in Timisoara"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tripPlacesPreview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="• Cafe Roma • Skyline Bar • Park"
+        android:textSize="14sp"
+        android:alpha="0.7"/>
+
+</LinearLayout>
